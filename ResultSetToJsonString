@@ -1,0 +1,32 @@
+var columns = new ArrayList<>();
+var numColumns = rs.getMetaData().getColumnCount();
+for(var i=0; i<numColumns; i++){
+	columns.add(rs.getMetaData().getColumnName(i));
+}
+
+var start = "{";
+var close = "}";
+var comma = ",";
+var colon = ":";
+var space  = " ";
+var jsonString = "";
+rs.beforeFirst();
+while(rs.next()){
+	jsonString = start + jsonString;
+	for(var i=0; i<numColumns; i++){
+		var comma2 = '"';
+		var data = rs.getString(columns.get(i));
+		
+		if(data == null)
+			comma2 = "";
+		
+		jsonString = jsonString + space + '"' + columns.get(i) + '"' + space + colon + space + comma2 + data + comma2;
+		if( i != (numColumns - 1))
+			jsonString = jsonString + space + comma;
+			
+	}
+	jsonString = jsonString + space + close;
+	if(rs.hasNext())
+		jsonString = jsonString + comma;
+}
+jsonString = "[" + jsonString + "]";
